@@ -383,9 +383,9 @@ def cluster(user_id):
                 "id": plan.id,
                 "sodium_intake": f"Allowed to intake maximum {plan.sodium_int} grams of sodium per day",
                 "fluid_intake": f"Supposed to have minimum {plan.fluid_int} litres of fluid per day",
-                "physical activity": plan.physical_activity,
+                "physical_activity": plan.physical_activity,
                 "diet": plan.diet,
-                "alcohol limit": plan.alcohol_limit,
+                "alcohol_limit": plan.alcohol_limit,
                 "efficiency": round(efficiency, 2)
             })
 
@@ -457,7 +457,6 @@ def predict(user_id):
            painkiller_usage, family_history, weight_changes, stress_level
         ]
         
-
 
         
         future_serum_creatinine = float(data.get('serumCreatinine', 0.0))
