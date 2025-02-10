@@ -32,9 +32,15 @@ const NavigationBar = () => {
               <li>
                 <Link to="/dashboard">Dashboard</Link>
               </li>
-              <li><a href="">Technologies</a></li>
               <li>
-                <Link to="/plan"> Plan </Link>
+              <Link to="/general">Diagnosis</Link>
+                </li>
+
+              <li>
+              <Link to="/treatment">Fetch Plans</Link>
+                </li>
+              <li>
+                <Link to="/plan"> Feedback </Link>
                 </li>
             </ul>
             <ul className="absolute right-0">

@@ -141,7 +141,7 @@ q_threshold = 0.5
 def calculate_difference(old_state, new_state):
     return {key: new_state[key] - old_state[key] for key in old_state}
 
-def select_actions():
+def select_actions(difference):
     selected_actions = [
         action for action in actions if random.uniform(0, 1) < epsilon or q_table[action] > q_threshold
     ]
