@@ -106,7 +106,9 @@ class FinalSelectedPlan(db.Model):
     diet = db.Column(db.String, nullable=True)
     alcohol_limit = db.Column(db.String, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users_table.user_id'), nullable=True)
-    
+    plan_id = db.Column(db.Integer, db.ForeignKey('final_treatment_plans.id'), nullable=True)
+
+
 
     
     
@@ -225,6 +227,7 @@ def calculate_efficiency(modified_data, normal_ranges):
 
     for param, normal_value in normal_ranges.items():
         if param in modified_data and normal_value != 0:  # Avoid division by zero
+            
             deviation = abs(modified_data[param] - normal_value) / normal_value * 100
             # print(normal_value)
             total_deviation += deviation
@@ -233,11 +236,18 @@ def calculate_efficiency(modified_data, normal_ranges):
     if count == 0:  # Avoid division by zero in efficiency calculation
         return 0  
     
-    print(count)
-
     efficiency = (total_deviation / count)  # Use count instead of fixed 7
     return efficiency
 
+def individual_efficiency(orignal, changes):
+    positive = abs(changes)
+    percent = positive/ orignal * 100
+    if(percent > 10):
+        percent -= 10
+        
+    return round(percent, 2)
+    
+    
     
 def generate_token(user_id):
     payload = {
@@ -612,6 +622,7 @@ def select_treatment(user_id):
             selected_plan.physical_activity = data.get("physical_activity", selected_treatment.physical_activity)
             selected_plan.diet = data.get("diet", selected_treatment.diet)
             selected_plan.alcohol_limit = data.get("alcohol_limit", selected_treatment.alcohol_limit)
+            selected_plan.plan_id = data.get("id", selected_treatment.id)
         else:
             # Create new treatment plan entry using values from FinalTreatmentPlan
             new_plan = FinalSelectedPlan(
@@ -620,7 +631,8 @@ def select_treatment(user_id):
                 fluid_int=data.get("fluid_int", selected_treatment.fluid_int),
                 physical_activity=data.get("physical_activity", selected_treatment.physical_activity),
                 diet=data.get("diet", selected_treatment.diet),
-                alcohol_limit=data.get("alcohol_limit", selected_treatment.alcohol_limit)
+                alcohol_limit=data.get("alcohol_limit", selected_treatment.alcohol_limit),
+                plan_id = data.get("id", selected_treatment.id)
             )
             db.session.add(new_plan)
 
@@ -641,9 +653,28 @@ def select_treatment(user_id):
 def get_selected_treatment(user_id):
     # Fetch the treatment plan directly from FinalSelectedPlan using user_id
     plan = db.session.query(FinalSelectedPlan).filter_by(user_id=user_id).first()
+    id = plan.plan_id
+    
+    report = db.session.query(TestReports).filter_by(user_id=user_id).first()
+    
+    orignal_plan = db.session.query(FinalTreatmentPlan).filter_by(id=id).first()
+    
+    if not orignal_plan:
+        return jsonify({"error": "No orignal plan found"}), 404
     
     if not plan:
         return jsonify({"error": "No treatment plan found"}), 404
+    
+    gfr = individual_efficiency(report.gfr, orignal_plan.gfr)
+    serum_creatinine = individual_efficiency(report.serum_creatinine, orignal_plan.serum_creatinine)
+    bun = individual_efficiency(report.bun, orignal_plan.bun)
+    serum_calcium = individual_efficiency(report.serum_calcium, orignal_plan.serum_calcium)
+    oxalate_levels = individual_efficiency(report.oxalate_levels, orignal_plan.oxalate_levels)
+    blood_pressure = individual_efficiency(report.blood_pressure, orignal_plan.blood_pressure)
+    urine_ph = individual_efficiency(report.urine_ph, orignal_plan.urine_ph)
+    
+    
+    
 
     return jsonify({
         "sodium_intake": plan.sodium_int,  # Return raw values, not formatted strings
@@ -651,6 +682,14 @@ def get_selected_treatment(user_id):
         "physical_activity": plan.physical_activity,
         "diet": plan.diet,
         "alcohol_limit": plan.alcohol_limit,
+        "gfr": gfr,
+        "serum_creatinine": serum_creatinine,
+        "bun": bun,
+        "serum_calcium": serum_calcium,
+        "oxalate_levels": oxalate_levels,
+        "blood_pressure": blood_pressure,
+        "urine_ph": urine_ph
+        
     }), 200
     
     
