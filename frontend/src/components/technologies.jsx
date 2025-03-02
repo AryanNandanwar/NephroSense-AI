@@ -22,12 +22,15 @@ export default function Technologies() {
           title="Treatment Plan"
           description="If the previous test states your kidney is not healthy, identify if you have any kidney diseases"
         />
-        </Link>
+        </Link >
+
+        <Link to="plan">
         <ActionAreaCard 
           image="https://tse2.mm.bing.net/th?id=OIP.Vb_ISef7DKY4lje7SGoYgQHaEL&pid=Api&P=0&h=180"
-          title="Scan Analysis"
+          title="Feedback"
           description="Identify your problems and allow us to guide you in your treatment process"
         />
+        </Link>
       </div>
     </div>
   );

@@ -27,6 +27,7 @@ const TreatmentPlans = () => {
           "Authorization": `Bearer ${token}`,
         },
       });
+       console.log(response)
 
       if (!response.ok) {
         const errorData = await response.json();

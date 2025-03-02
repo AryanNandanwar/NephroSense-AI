@@ -152,6 +152,13 @@ const SelectedTreatmentPlan = () => {
                         <p><strong>Diet:</strong> {selectedPlan.diet}</p>
                         <p><strong>Alcohol Consumption:</strong> {selectedPlan.alcohol_limit}</p>
                         <p><strong>Physical activity:</strong> {selectedPlan.physical_activity}</p>
+                        <p><strong>GFR Improvement Rate: </strong> {selectedPlan.gfr} %</p>
+                        <p><strong>Serum Creatinine Improvement Rate:</strong> {selectedPlan.serum_creatinine} %</p>
+                        <p><strong>BUN Improvement Rate:</strong> {selectedPlan.bun} %</p>
+                        <p><strong>Serum Calcium Improvement Rate:</strong> {selectedPlan.serum_calcium} %</p>
+                        <p><strong>Blood Pressure Improvement Rate:</strong> {selectedPlan.blood_pressure} %</p>
+                        <p><strong>Oxalate Levels Improvement Rate:</strong> {selectedPlan.oxalate_levels} %</p>
+                        <p><strong>Urine pH Improvement Rate:</strong> {selectedPlan.urine_ph} %</p>
                     </div>
                 ) : (
                     <p className="text-gray-700">No treatment plan selected.</p>
